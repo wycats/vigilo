@@ -1,7 +1,8 @@
 module Vigilo
   class Watcher
     def self.watch(*directories, &block)
-      watcher = new(Vigilo::Adapters::FSEvents.new, *directories)
+      listener = ENV["VIGILO_ADAPTER"] ? Vigilo::Adapters.const_get(ENV["VIGILO_ADAPTER"]) : Vigilo::Adapters::Portable
+      watcher = new(Vigilo::Adapter.new(listener), *directories)
       watcher.start(&block)
     end
 
